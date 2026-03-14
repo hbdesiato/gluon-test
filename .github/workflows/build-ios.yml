@@ -30,7 +30,7 @@ jobs:
 
       - name: Build with Maven (iOS Simulator)
         working-directory: ./HelloGluon
-        run: mvn -Pios clean gluonfx:build -Dgluonfx.target=ios-sim
+        run: mvn -Pios clean gluonfx:build
         
       # - name: Upload App Artifact
       #   uses: actions/upload-artifact@v4
