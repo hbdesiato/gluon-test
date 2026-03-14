@@ -1,0 +1,38 @@
+name: Build HelloGluon for iOS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    name: Build iOS Application
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout gluon-samples
+        uses: actions/checkout@v4
+        with:
+          repository: 'gluonhq/gluon-samples'
+
+      - name: Setup Gluon GraalVM
+        uses: gluonhq/setup-graalvm@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build with Maven (iOS Simulator)
+        working-directory: ./HelloGluon
+        run: mvn -Pios clean gluonfx:build -Dgluonfx.target=ios-sim
+        
+      # - name: Upload App Artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: HelloGluon-iOS-App
+      #     path: HelloGluon/target/gluonfx/**/*.app
+      #     if-no-files-found: warn
