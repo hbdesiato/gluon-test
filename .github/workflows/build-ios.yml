@@ -27,6 +27,7 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+          save-always: true
 
       - name: Build with Maven (iOS Simulator)
         working-directory: ./HelloGluon
