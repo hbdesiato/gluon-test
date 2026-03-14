@@ -20,19 +20,21 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           arch: aarch64
-
-      - name: Cache Maven packages
-        uses: actions/cache@v4
+      - name: Restore Maven packages
+        uses: actions/cache/restore@v4
         with:
-          path: ~/.m2
+          path: ~/.m2/repository
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-          save-always: true
-
       - name: Build with Maven (iOS Simulator)
         working-directory: ./HelloGluon
         run: mvn -Pios clean gluonfx:build
-        
+      - name: Save Maven packages
+        uses: actions/cache/save@v4
+        if: always() # Das zwingt GitHub, den Cache auch nach einem Build-Fehler zu speichern
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}        
       # - name: Upload App Artifact
       #   uses: actions/upload-artifact@v4
       #   with:
